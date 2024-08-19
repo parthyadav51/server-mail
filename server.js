@@ -1,30 +1,33 @@
-// server.js
-const express = require('express');
-const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
-const cors = require('cors');
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
 
 dotenv.config();
+const emailRoutes = require("./routes/emailRoute");
 
 const app = express();
 const port = process.env.PORT || 8001;
+const corsOptions = { origin: "*" };
 
-// Middleware
-app.use(bodyParser.json());
-
-// CORS configuration
-const corsOptions = {
-  origin: "*"
-}
+app.use(express.json());
 app.use(cors(corsOptions));
 
-// Import routes
-const emailRoutes = require('./routes/emailRoute');
+app.use("/api", emailRoutes);
+app.use("/", (req, res) => {
+  console.log({
+    data: req.body,
+    params: req.params,
+    query: req.query,
+  });
 
-// Use routes
-app.use('/api', emailRoutes);
-
-// Start the server
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on http://0.0.0.0:${port}`);
+  res.send({
+    data: req.body,
+    params: req.params,
+    query: req.query,
+    message: "Api is working",
+  });
 });
+
+app.listen(port, "0.0.0.0", () =>
+  console.log(`Server is running on http://localhost:${port}`)
+);
